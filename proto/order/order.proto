@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package order;
+
+option go_package = "github.com/omareloui/gRPCMicroservicesInGo/proto/go/order";
+
+service OrderService {
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {}
+}
+
+message CreateOrderRequest {
+  int64 user_id = 1;
+  repeated Item items = 2;
+  float total_price = 3;
+}
+
+message Item {
+  string name = 1;
+}
+
+message CreateOrderResponse {
+  int64 order_id = 1;
+}
