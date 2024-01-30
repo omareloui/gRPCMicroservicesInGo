@@ -1,0 +1,72 @@
+version: "3.9"
+
+services:
+  order:
+    build:
+      context: .
+      dockerfile: ./services/order/build/package/Dockerfile
+    init: true
+    profiles:
+      - prod
+    ports:
+      - 3000:3000
+    env_file:
+      - path: ./.env
+        required: false
+    networks:
+      - default
+
+  order-dev:
+    build:
+      context: .
+      dockerfile: services/order/build/package/dev.Dockerfile
+    init: true
+    profiles:
+      - dev
+    ports:
+      - 3000:3000
+    env_file:
+      - path: ./.env
+        required: true
+    networks:
+      - default
+    develop:
+      watch:
+        - action: rebuild
+          path: ./go.sum
+          target: /usr/src/go.sum
+        - action: rebuild
+          path: ./go.mod
+          target: /usr/src/go.mod
+        - action: rebuild
+          path: ./.env
+        - action: sync
+          path: ./services/order
+          target: /usr/src/services/order
+        - action: sync
+          path: ./proto/go
+          target: /usr/src/proto/go
+        - action: sync
+          path: ./lib/go
+          target: /usr/src/lib/go
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: verysecretpass
+      MYSQL_DATABASE: order
+    env_file:
+      - path: ./.env
+        required: true
+    networks:
+      - default
+    ports:
+      - 3306:3306
+    volumes:
+      - sqldb:/var/lib/mysql
+
+networks:
+  default:
+
+volumes:
+  sqldb:

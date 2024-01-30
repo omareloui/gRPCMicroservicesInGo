@@ -4,20 +4,35 @@ package order;
 
 option go_package = "github.com/omareloui/gRPCMicroservicesInGo/proto/go/order";
 
-service OrderService {
-  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse) {}
+service Order {
+  rpc Get(GetRequest) returns (OrderM) {}
+  rpc Create(CreateRequest) returns (CreateResponse) {}
 }
 
-message CreateOrderRequest {
+message CreateRequest {
   int64 user_id = 1;
   repeated Item items = 2;
   float total_price = 3;
 }
 
-message Item {
-  string name = 1;
+message CreateResponse {
+  int64 order_id = 1;
 }
 
-message CreateOrderResponse {
+message GetRequest {
   int64 order_id = 1;
+}
+
+message Item {
+  reserved 1;
+  string product_code = 2;
+  float unit_price = 3;
+  uint32 quantity = 4;
+}
+
+message OrderM {
+  int64 id = 1;
+  int64 user_id = 2;
+  repeated Item items = 3;
+  float total_price = 4;
 }

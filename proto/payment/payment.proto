@@ -9,9 +9,13 @@ service PaymentService {
 }
 
 message CreatePaymentRequest {
-  float price = 1;
+  reserved 1;
+  int64 user_id = 2;
+  int64 order_id = 3;
+  float price = 4;
 }
 
 message CreatePaymentResponse {
-  int64 bill_id = 1;
+  reserved 1;
+  int64 payment_id = 2;
 }
