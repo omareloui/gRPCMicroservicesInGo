@@ -15,6 +15,9 @@ services:
         required: false
     networks:
       - default
+    depends_on:
+      db:
+        condition: service_healthy
 
   order-dev:
     build:
@@ -30,6 +33,9 @@ services:
         required: true
     networks:
       - default
+    depends_on:
+      db:
+        condition: service_healthy
     develop:
       watch:
         - action: rebuild
@@ -64,6 +70,20 @@ services:
       - 3306:3306
     volumes:
       - sqldb:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-uroot",
+          "-pverysecretpass",
+        ]
+      timeout: 20s
+      interval: 3s
+      retries: 20
 
 networks:
   default:
